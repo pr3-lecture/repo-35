@@ -3,8 +3,6 @@
 #include "crypto.h"
 
 bool checkInputText(char* input) {
-  int containsIllegalChar = 0;
-  int count = 0;
   bool isLegal = true;
   char legalCharacters[] = MESSAGE_CHARACTERS;
   char ckey;
@@ -20,10 +18,8 @@ for (int i = 0; input[i] != '\0'; i++){
       isLegal = true;
     }
   }
-
 }
-
-
+return true;
 }
 
 int checkKey(KEY key){
