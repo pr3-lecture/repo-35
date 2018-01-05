@@ -8,5 +8,5 @@ crypto.o: crypto.c
 	gcc -Wall -c crypto.c
 decrypt: main.o crypto.o
 	gcc -o decrypt main.o crypto.o
-encrypt: main.o crypto
+encrypt: main.o crypto.o
 	gcc -o encrypt main.o crypto.o

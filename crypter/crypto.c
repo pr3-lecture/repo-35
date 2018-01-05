@@ -4,50 +4,39 @@
 #include <string.h>
 #include "crypto.h"
 
-bool checkInputText(const char* input, const char* checkSet) {
-  bool isLegal = true;
-  char ckey;
+int checkInputText(const char* input, const char* checkSet) {
+  int found;
 
-  if(input ==   '\0'){
-    return false;
-  }
-
-for (int i = 0; input[i] != '\0'; i++){
-  ckey = input[i];
-  if(isLegal == false) {
-    return false;
-  }
-  isLegal = false;
-  for (int k = 0; checkSet[i] != '\0'; k++) {
-    if(ckey == checkSet[i]){
-      isLegal = true;
+  for (int i = 0;i < strlen(input); i++){
+    found = 0;
+    for (int k = 0;k < strlen(checkSet); k++) {
+      if(input[i] == checkSet[k]){
+        found = 1;
+      }
+    }
+    if(found == 0) {
+      return 1;
     }
   }
-}
-return true;
+  return 0;
 }
 
-bool checkKey(KEY key){
-  bool isLegal = true;
-  char legalCharacters[] = KEY_CHARACTERS;
-  char ckey;
-  if(key.chars == '\0') {
-    return false;
-  }
+int checkKey(KEY key){
+  char* legalCharacters = KEY_CHARACTERS;
+  int found;
 
-for (int i = 0; key.chars[i] != '\0'; i++){
-  ckey = key.chars[i];
-  if(isLegal == false) {
-    return false;
-  }
-  isLegal = false;
-  for (int k = 0; legalCharacters[i] != '\0'; k++) {
-    if(ckey == legalCharacters[i]){
-      isLegal = true;
+  for (int i = 0;i < strlen(key.chars); i++){
+    found = 0;
+    for (int k = 0;k < strlen(legalCharacters); k++) {
+      if(key.chars[i] == legalCharacters[k]){
+        found = 1;
+      }
+    }
+    if(found == 0) {
+      return 1;
     }
   }
-}
-return true;
+  return 0;
 }
 
 void extendKey (const char* input, char* ouput, int increase) {
@@ -61,22 +50,19 @@ void extendKey (const char* input, char* ouput, int increase) {
   }
 }
 
-void xor (KEY key, const char* input, char* output) {
+int xor (KEY key, const char* input, char* output) {
   if (key.type == 1) {
-    char* extendedKey = (char*) malloc(sizeof(char) * (strlen(input) + 1));
-    extendKey(key.chars, extendedKey, strlen(input));
-
+    int keyLength = strlen(key.chars);
     for (int i = 0; i < strlen(input); i++) {
-      output[i] = output[i] - 'A' + 1;
-      extendedKey[i] = extendedKey[i] - 'A' + 1;
-
-      output[i] = output[i] ^ extendedKey[i];
-      output[i] = output[i] + 'A' -1;
+      char charAtInput = input[i] - 'A' +1;
+      char charAtKey = key.chars[i % keyLength] - 'A' +1;
+      char outputChar = charAtInput ^ charAtKey;
+      output[i] = outputChar + 'A' -1;
     }
-    free(extendedKey);
-
+    return 0;
   } else {
     *output = *input;
+    return 0;
   }
 }
 
@@ -85,14 +71,17 @@ int encrypt(KEY key, const char* input, char* output){
   if(strlen(key.chars) == 0){
     return E_KEY_TOO_SHORT;
   }
-  else if(!checkKey(key)) {
+
+  if(checkKey(key)) {
     return E_KEY_ILLEGAL_CHAR;
   }
-  else if (!checkInputText(input, MESSAGE_CHARACTERS)) {
+
+  if (checkInputText(input, MESSAGE_CHARACTERS)) {
     return E_MESSAGE_ILLEGAL_CHAR;
-  } else {
-    xor(key, input, output);
   }
+
+  xor(key, input, output);
+
   return 0;
 }
 
@@ -100,13 +89,16 @@ int decrypt(KEY key, const char* cypherText, char* output){
   if(strlen(key.chars) == 0){
     return E_KEY_TOO_SHORT;
   }
-  else if(!checkKey(key)) {
+
+  if(checkKey(key)) {
     return E_KEY_ILLEGAL_CHAR;
   }
-  else if (!checkInputText(cypherText, CYPHER_CHARACTERS)) {
-    return E_MESSAGE_ILLEGAL_CHAR;
-  } else {
-    xor(key, cypherText, output);
+
+  if (checkInputText(cypherText, CYPHER_CHARACTERS)) {
+    return E_CYPHER_ILLEGAL_CHAR;
   }
+
+  xor(key, cypherText, output);
+
   return 0;
 }

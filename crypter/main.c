@@ -9,20 +9,23 @@
    }
 
    KEY key = {1, argv[1]};
-   char input[100];
+   char input[255];
    int returnValue;
-   char* result;
+  // char* result;
 
    if (argc == 2) {
-     fgets(input, 100, stdin);
-     result = (char*) malloc(sizeof(char) * strlen(input));
-     if(strstr(argv[0], "encrypt")) {
-       returnValue = encrypt(key, input, result);
+     printf("Bitte Nachricht eingeben: \n");
+     fgets(input, 255, stdin);
+     input[strlen(input) - 1] = '\0';
+     // result = (char*) malloc(sizeof(char) * (strlen(input)+1));
+     char output[BUFSIZ];
+     if(strcmp(argv[0], "encrypt") == 0) {
+       returnValue = encrypt(key, input, output);
      } else if (strstr(argv[0], "decrypt")) {
-       returnValue = decrypt(key, input, result);
+       returnValue = decrypt(key, input, output);
      }
-     printf("%s \n", result);
-     free(result);
+     printf("%s \n", output);
+     // free(result);
    }
 
    switch(returnValue) {
@@ -36,4 +39,6 @@
       fprintf(stderr, "Ungültige Zeichen in verschlüsseltem Text"); break;
      default: return returnValue;
    }
+
+   printf("%i \n", returnValue);
  }
