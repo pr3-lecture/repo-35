@@ -39,17 +39,6 @@ int checkKey(KEY key){
   return 0;
 }
 
-void extendKey (const char* input, char* ouput, int increase) {
-  int i, k;
-  int length = strlen(input);
-
-  for (i = 0, k = 0; i < increase; i++, k++) {
-    if(k == length){
-      k = 0;
-    }
-  }
-}
-
 int xor (KEY key, const char* input, char* output) {
   if (key.type == 1) {
     int keyLength = strlen(key.chars);

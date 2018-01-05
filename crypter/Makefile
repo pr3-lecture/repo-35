@@ -1,7 +1,7 @@
 .PHONY: all clean
 all: decrypt encrypt
 clean:
-	rm -f main.o decrypt encrypt crypto.o
+	rm -f main.o crypto.o decrypt.exe encrypt.exe 
 main.o: main.c
 	gcc -Wall -c main.c
 crypto.o: crypto.c
