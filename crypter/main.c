@@ -11,7 +11,6 @@
    KEY key = {1, argv[1]};
    char input[255];
    int returnValue;
-  // char* result;
 
    if (argc == 2) {
      printf("Bitte Nachricht eingeben: \n");
