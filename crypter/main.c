@@ -17,16 +17,28 @@
      printf("Bitte Nachricht eingeben: \n");
      fgets(input, 255, stdin);
      input[strlen(input) - 1] = '\0';
-     // result = (char*) malloc(sizeof(char) * (strlen(input)+1));
-     char output[BUFSIZ];
-     if(strcmp(argv[0], "encrypt") == 0) {
-       returnValue = encrypt(key, input, output);
-     } else if (strstr(argv[0], "decrypt")) {
-       returnValue = decrypt(key, input, output);
-     }
-     printf("%s \n", output);
-     // free(result);
    }
+
+   if(argc == 3) {
+     FILE* inputFile = fopen(argv[2], "r");
+
+     if(input == NULL) {
+       fprintf(stderr, "Fehler: Datei %s nicht gefunden", argv[2]);
+       exit(1);
+     }
+
+     fgets(input, 254, inputFile);
+     input[strlen(input) - 1] = '\0';
+
+   }
+
+   char output[BUFSIZ];
+   if(strcmp(argv[0], "encrypt") == 0) {
+     returnValue = encrypt(key, input, output);
+   } else if (strstr(argv[0], "decrypt")) {
+     returnValue = decrypt(key, input, output);
+   }
+   printf("%s \n", output);
 
    switch(returnValue) {
      case E_KEY_TOO_SHORT:
@@ -40,5 +52,4 @@
      default: return returnValue;
    }
 
-   printf("%i \n", returnValue);
  }
